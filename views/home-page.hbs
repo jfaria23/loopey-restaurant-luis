@@ -1,5 +1,31 @@
 <h1>Welcome to our Restaurant</h1>
 <img src="/images/home.jpg" alt="delicious pizzas" />
 
+
+<section>
+    <form method="GET" action="/pizzas">
+    <label>Max Price
+    <input type="number" name="maxPrice">
+    </label>
+    
+    <button type="submit">Search</button>
+    </form>
+</section>
+
+<section>
+    <h3>Login:
+        
+<form method="POST" action="/login"> 
+    <label>Email:
+    <input type="email" name="emailAdress">
+</label>
+<label>Password:
+    <input type="password" name="pwd">
+</label>
+<button type="submit">Login</button>
+    </h3>
+</form>
+</section>
+
 {{> ctaOrderNow}}
 

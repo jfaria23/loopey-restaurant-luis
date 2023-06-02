@@ -2,6 +2,7 @@ const express = require("express");
 const hbs = require("hbs");
 const Pizza = require("./models/Pizza.model");
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
 
 const app = express();
 
@@ -11,6 +12,7 @@ app.set("views", __dirname + "/views"); //tells our Express app where to look fo
 app.set("view engine", "hbs"); //sets HBS as the template engine
 
 hbs.registerPartials(__dirname + "/views/partials"); //tell HBS which directory we use for partials
+app.use(bodyParser.urlencoded({ extended: true }));
 
 mongoose
   .connect("mongodb://127.0.0.1/loopeyRestaurant")
@@ -91,11 +93,23 @@ app.get("/drinks/:drinkName", (req, res, next) => {
 
 //GET /pizzas
 app.get("/pizzas", (req, res, next) => {
-  Pizza.find()
+  // console.log(req.query); // req.query is an object
+  // console.log(typeof req.query.maxPrice); // we will receive a string
+  console.log(req.query.maxPrice);
+  let maximumPrice = req.query.maxPrice;
+  maximumPrice = Number(req.query.maxPrice);
+
+  let filter = {};
+  if (maximumPrice) {
+    filter = { price: { $lte: maximumPrice } };
+  }
+
+  Pizza.find(filter)
     .then((pizzas) => {
       const data = {
         pizzasArr: pizzas,
       };
+
       res.render("products-list", data);
     })
     .catch((e) => console.log("error", e));
@@ -112,6 +126,20 @@ app.get("/pizzas", (req, res, next) => {
 // app.get("/drinks/gintonic", (req, res, next) => {
 //     res.send("display info about gintonic")
 // });
+
+app.post("/login", req, res, (next) => {
+  console.log("Luis is trying to log in");
+  console.log(req.body);
+
+  const email = req.body.emailaddress;
+  const pwd = req.body.pwd;
+
+  if (pwd === "1234") {
+    res.send("welcome!");
+  } else {
+    res.send("wrong password");
+  }
+});
 
 app.listen(3000, () => {
   console.log("server listening on port 3000...");
